@@ -14,7 +14,7 @@
 # This script does the following:
 #   Reads the MySQL dump file.
 # Defines a function convert_insert that:
-#   Replaces 'INSERT IGNORE' with 'INSERT OR IGNORE'
+#   Replaces 'INSERT IGNORE' with 'INSERT'
 # Replaces single quotes with double quotes
 # Escapes single quotes within strings
 # Removes backticks around table and column names
@@ -37,7 +37,7 @@ convert_insert <- function(origin_path, output_path) {
     
     if(grepl("^INSERT", line)) {
       # replace 'INSERT IGNORE' with 'INSERT OR IGNORE'
-      line <- gsub("INSERT IGNORE", "INSERT OR IGNORE", line)
+      line <- gsub("INSERT IGNORE", "INSERT", line)
       
       # replace single quotes with double quotes
       line <- gsub("'", "\"", line)
@@ -63,24 +63,25 @@ convert_insert <- function(origin_path, output_path) {
 # convert the files
 
 insert_folder <- file.path("BX_MySQL_Inserts")
+output_folder <- file.path("BX_Sqlite_Inserts")
 
 # users file
 users_origin_path <- file.path(insert_folder, "BX-Users_Insert.sql")
 
-users_output_path <- file.path(insert_folder, "BX-Users_Insert-converted.sql")
+users_output_path <- file.path(output_folder, "BX-Users_Insert.sql")
 
 users_converted <- convert_insert(users_origin_path, users_output_path)
 
 # books file
 books_origin_path <- file.path(insert_folder, "BX-Books_Insert.sql")
 
-books_output_path <- file.path(insert_folder, "BX-Books_Insert-converted.sql")
+books_output_path <- file.path(output_folder, "BX-Books_Insert.sql")
 
 books_converted <- convert_insert(books_origin_path, books_output_path)
 
 # ratings file
 ratings_origin_path <- file.path(insert_folder, "BX-Books-Ratings_Insert.sql")
 
-ratings_output_path <- file.path(insert_folder, "BX-Books-Ratings_Insert-converted.sql")
+ratings_output_path <- file.path(output_folder, "BX-Books-Ratings_Insert.sql")
 
 ratings_converted <- convert_insert(ratings_origin_path, ratings_output_path)
