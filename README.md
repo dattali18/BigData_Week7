@@ -2,6 +2,7 @@
 
 ## Requirements
 
+
 1. Process the `MySQL` dump files and convert into `Sqlite` format
    - (Optional) transform into `.csv` format
 2. Create a DB into `Sqlite` and import the data
