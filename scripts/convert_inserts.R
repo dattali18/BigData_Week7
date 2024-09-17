@@ -17,71 +17,118 @@
 #   Replaces 'INSERT IGNORE' with 'INSERT'
 # Replaces single quotes with double quotes
 # Escapes single quotes within strings
-# Removes backticks around table and column names
+# Removes backticks around table and column names and replace with " (double quotes)"
 # Applies the conversion to each line of the dump file.
 # Writes the converted statements to a new file.
 # Optionally wraps the INSERT statements in a transaction for better performance.
 
+convert_line <- function(line) {
+  # take the example of line and expected line and write the following function
+
+  # Replace 'INSERT IGNORE' with 'INSERT'
+  line <- gsub("INSERT IGNORE", "INSERT", line)
+
+  # Replace single quotes with double quotes
+  line <- gsub("'", "\"", line)
+
+  # Escapes single quotes within strings
+  line <- gsub("\"([^\"]*)\"([^\"]*)\"([^\"]*)\"", "\"\\1''\\2''\\3\"", line)
+
+  # Removes backticks around table and column names and replace with " (double quotes)"
+  line <- gsub("`", "\"", line)
+
+  return(line)
+}
+
 convert_insert <- function(origin_path, output_path) {
   mysql_dump <- readLines(origin_path)
-  
+
   # check for errors
   if (length(mysql_dump) == 0) {
     stop("The file is empty")
   }
-  
-  convert_line <- function(line) {
-    if(length(line) == 0) {
-      return(line)
-    }
-    
-    if(grepl("^INSERT", line)) {
-      # replace 'INSERT IGNORE' with 'INSERT OR IGNORE'
-      line <- gsub("INSERT IGNORE", "INSERT", line)
-      
-      # replace single quotes with double quotes
-      line <- gsub("'", "\"", line)
-      
-      # escape single quotes within strings
-      line <- gsub("\"([^\"]*)\"([^\"]*)\"([^\"]*)\"", "\"\\1''\\2\"\\3\"", line)
-      
-      # remove backticks around table and column names
-      line <- gsub("`", "", line)
-    }
-    return(line)
-  }
-  
+
   # apply the conversion to each line of the dump file
   converted_dump <- sapply(mysql_dump, convert_line)
-  
+
   # write the converted statements to a new file
   writeLines(converted_dump, output_path)
-  
+
   return(converted_dump)
 }
 
+test_convert_line <- function(origin_path) {
+  # Open the file
+  con <- file(origin_path, "r")
+
+  # Read the first line
+  line <- readLines(con, n = 1)
+
+  # Close the file
+  close(con)
+
+  # Apply the convert_line function
+  converted_line <- convert_line(line)
+
+  print("Original line:")
+  print(line)
+  # Print the result to the console
+  print("Converted line:")
+  print(converted_line)
+}
+
+# Test
 # convert the files
 
-insert_folder <- file.path("BX_MySQL_Inserts")
-output_folder <- file.path("BX_Sqlite_Inserts")
+# insert_folder <- file.path("BX_MySQL_Inserts")
 
-# users file
-users_origin_path <- file.path(insert_folder, "BX-Users_Insert.sql")
+# users_origin_path <- file.path(insert_folder, "BX-Users_Insert.sql")
+# books_origin_path <- file.path(insert_folder, "BX-Books_Insert.sql")
+# ratings_origin_path <- file.path(insert_folder, "BX-Books-Ratings_Insert.sql")
 
-users_output_path <- file.path(output_folder, "BX-Users_Insert.sql")
+# test_convert_line(users_origin_path)
+# test_convert_line(books_origin_path)
+# test_convert_line(ratings_origin_path)
 
-users_converted <- convert_insert(users_origin_path, users_output_path)
+line <- "INSERT IGNORE INTO `BX-Books` VALUES ('080652121X','Hitler\'s Secret Bankers: The Myth of Swiss Neutrality During the Holocaust','Adam Lebor',2000,'Citadel Press','http://images.amazon.com/images/P/080652121X.01.THUMBZZZ.jpg','http://images.amazon.com/images/P/080652121X.01.MZZZZZZZ.jpg','http://images.amazon.com/images/P/080652121X.01.LZZZZZZZ.jpg');"
+expected_line <- 'INSERT INTO "BX-Books" VALUES ("080652121X","Hitler''s Secret Bankers: The Myth of Swiss Neutrality During the Holocaust","Adam Lebor",2000,"Citadel Press","http://images.amazon.com/images/P/080652121X.01.THUMBZZZ.jpg","http://images.amazon.com/images/P/080652121X.01.MZZZZZZZ.jpg","http://images.amazon.com/images/P/080652121X.01.LZZZZZZZ.jpg");'
 
-# books file
-books_origin_path <- file.path(insert_folder, "BX-Books_Insert.sql")
 
-books_output_path <- file.path(output_folder, "BX-Books_Insert.sql")
 
-books_converted <- convert_insert(books_origin_path, books_output_path)
+converted_line <- convert_line(line)
 
-# ratings file
-ratings_origin_path <- file.path(insert_folder, "BX-Books-Ratings_Insert.sql")
+print("Original line:")
+print(line)
+print("Converted line:")
+print(converted_line)
 
-ratings_output_path <- file.path(output_folder, "BX-Books-Ratings_Insert.sql")
 
-ratings_converted <- convert_insert(ratings_origin_path, ratings_output_path)
+
+# # convert the files
+
+# insert_folder <- file.path("BX_MySQL_Inserts")
+# output_folder <- file.path("BX_Sqlite_Inserts")
+
+# # users file
+# print("Converting users file")
+# users_origin_path <- file.path(insert_folder, "BX-Users_Insert.sql")
+
+# users_output_path <- file.path(output_folder, "BX-Users_Insert.sql")
+
+# users_converted <- convert_insert(users_origin_path, users_output_path)
+
+# # books file
+# print("Converting books file")
+# books_origin_path <- file.path(insert_folder, "BX-Books_Insert.sql")
+
+# books_output_path <- file.path(output_folder, "BX-Books_Insert.sql")
+
+# books_converted <- convert_insert(books_origin_path, books_output_path)
+
+# # ratings file
+# print("Converting ratings file")
+# ratings_origin_path <- file.path(insert_folder, "BX-Books-Ratings_Insert.sql")
+
+# ratings_output_path <- file.path(output_folder, "BX-Books-Ratings_Insert.sql")
+
+# ratings_converted <- convert_insert(ratings_origin_path, ratings_output_path)

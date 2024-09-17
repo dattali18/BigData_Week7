@@ -34,9 +34,9 @@ Once you have created the database, you can import the data from the `Insert` fi
 
 ```bash
 # import the data from the dump files
-sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Users_Insert.sql"
-sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Books_Insert.sql"
-sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Book_Ratings_Insert.sql"
+sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX-Users_Insert.sql"
+sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX-Books_Insert.sql"
+sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX-Book-Ratings_Insert.sql"
 ```
 
 or using the csv convertor
@@ -51,9 +51,9 @@ and then import the data
 sqlite3 BX_db.sqlite
 
 sqlite> .mode csv
-sqlite> .import BX_csv/BX-Users.csv BX_Users
-sqlite> .import BX_csv/BX-Books.csv BX_Books
-sqlite> .import BX_csv/BX-Book-Ratings.csv BX_Book_Ratings
+sqlite> .import "BX_csv/BX-Users.csv" "BX-Users"
+sqlite> .import "BX_csv/BX-Books.csv" "BX-Books"
+sqlite> .import "BX_csv/BX-Book-Ratings.csv" "BX-Book-Ratings"
 ```
 
 ## DB Schema
