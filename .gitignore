@@ -11,3 +11,5 @@
 # remove folder .idea
 .idea
 
+# remove folder .vscode
+.vscode

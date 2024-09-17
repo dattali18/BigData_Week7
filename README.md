@@ -19,6 +19,15 @@ Once you have installed the required software, you can run the following command
 sqlite3 BX_db.sqlite < "scripts/BX_Creates.sql"
 ```
 
+Now we will use the `R` script to convert tha data from the `MySQL` dump files into `Sqlite` format:
+
+> [!NOTE] its possible that the converted files already exist in the repo, but you can run the script to convert them again.
+
+```bash
+# convert the data from the MySQL dump files into Sqlite format
+Rscript scripts/Wee7_convert_inserts.R
+```
+
 Once you have created the database, you can import the data from the `Insert` files:
 
 ```bash
