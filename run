@@ -8,7 +8,9 @@ echo "Database created"
 # populate the database using the script
 echo "Populating the database"
 echo "Users"
-sqlite3 "BX_db_test.sqlite"< "BX_Sqlite_Inserts/BX-Users_Insert.sql"
+# insert only 10_000 lines in the Users table to avoid memory issue
+head -n 10000 "BX_Sqlite_Inserts/BX-Users_Insert.sql" > "BX_Sqlite_Inserts/BX-Users_Insert_10k.sql"
+sqlite3 "BX_db_test.sqlite"< "BX_Sqlite_Inserts/BX-Users_Insert_10k.sql"
 # check for errors
 if [ $? -ne 0 ]; then
     echo "Error populating the Users table"
@@ -16,7 +18,8 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Books"
-sqlite3 "BX_db_test.sqlite"< "BX_Sqlite_Inserts/BX-Books_Insert.sql"
+head -n 10000 "BX_Sqlite_Inserts/BX-Books_Insert.sql" > "BX_Sqlite_Inserts/BX-Books_Insert_10k.sql"
+sqlite3 "BX_db_test.sqlite"< "BX_Sqlite_Inserts/BX-Books_Insert_10k.sql"
 # check for errors
 if [ $? -ne 0 ]; then
     echo "Error populating the Books table"
@@ -24,7 +27,8 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Book-Ratings"
-sqlite3 "BX_db_test.sqlite"< "BX_Sqlite_Inserts/BX-Books-Ratings_Insert.sql"
+head -n 10000 "BX_Sqlite_Inserts/BX-Books-Ratings_Insert.sql" > "BX_Sqlite_Inserts/BX-Book-Ratings_Insert_10k.sql"
+sqlite3 "BX_db_test.sqlite"< "BX_Sqlite_Inserts/BX-Book-Ratings_Insert_10k.sql"
 # check for errors
 if [ $? -ne 0 ]; then
     echo "Error populating the Book-Ratings table"
