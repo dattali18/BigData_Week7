@@ -13,3 +13,5 @@
 
 # remove folder .vscode
 .vscode
+
+*.sqlite

@@ -16,7 +16,7 @@ Once you have installed the required software, you can run the following command
 
 ```bash
 # create the database in sqlite
-sqlite3 BX_db.sqlite < "scripts/BX_Creates.sql"
+sqlite3 BX_db.sqlite < "BX_Sqlite_Creates/BX_Creates.sql"
 ```
 
 Now we will use the `R` script to convert tha data from the `MySQL` dump files into `Sqlite` format:
@@ -35,6 +35,23 @@ Once you have created the database, you can import the data from the `Insert` fi
 sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Users_Insert.sql"
 sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Books_Insert.sql"
 sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Book_Ratings_Insert.sql"
+```
+
+or using the csv convertor
+
+```bash
+Rscript scripts/convert_csv.R
+```
+
+and then import the data
+
+```bash
+sqlite3 BX_db.sqlite
+
+sqlite> .mode csv
+sqlite> .import BX_csv/BX-Users.csv BX_Users
+sqlite> .import BX_csv/BX-Books.csv BX_Books
+sqlite> .import BX_csv/BX-Book-Ratings.csv BX_Book_Ratings
 ```
 
 ## DB Schema
