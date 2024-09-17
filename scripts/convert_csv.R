@@ -12,27 +12,7 @@ convert_line <- function(line) {
 
   # Replace single quotes with double quotes to ensure CSV formatting
   line <- gsub("'", "\"", line)
-  
-  # Split by commas that are outside of quotes (i.e., commas separating values)
-  parts <- strsplit(line, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", perl = TRUE)[[1]]
 
-  # Trim whitespace from each part
-  parts <- trimws(parts)
-
-  # Ensure that all fields with commas or quotes are properly quoted
-  parts <- sapply(parts, function(part) {
-    if (grepl(",", part) || grepl("\"", part)) {
-      # Escape double quotes inside fields
-      part <- gsub("\"", "\"\"", part)
-      # Enclose the entire field in quotes
-      part <- paste0("\"", part, "\"")
-    }
-    return(part)
-  })
-  
-  # Join the parts back into a CSV line
-  line <- paste(parts, collapse = ",")
-  
   return (line)
 }
 
@@ -79,15 +59,15 @@ test_convert_line <- function(file_path) {
     print(converted_line)
 }
 
-for ( i in 1:length(input_files)) {
-    print(paste("Starting conversion of file", input_files[i]))
-    test_convert_line(input_files[i])
-}
-
-# for (i in 1:length(input_files)) {
-#     # print starting conversion of file x
+# for ( i in 1:length(input_files)) {
 #     print(paste("Starting conversion of file", input_files[i]))
-#     convert_insert_csv(input_files[i], output_files[i])
-#     # print conversion of file x completed
-#     print(paste("Conversion of file", input_files[i], "completed"))
+#     test_convert_line(input_files[i])
 # }
+
+for (i in 1:length(input_files)) {
+    # print starting conversion of file x
+    print(paste("Starting conversion of file", input_files[i]))
+    convert_insert_csv(input_files[i], output_files[i])
+    # print conversion of file x completed
+    print(paste("Conversion of file", input_files[i], "completed"))
+}
