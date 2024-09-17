@@ -1,4 +1,9 @@
 -- the CREATE SCRIPTS FOR THE Sqlite3 database
+
+-- Create database if not exists
+CREATE DATABASE IF NOT EXISTS "BX_db";
+
+
 -- Table structure for BX-Users
 CREATE TABLE IF NOT EXISTS "BX-Users" (
   "User-ID" INTEGER NOT NULL,

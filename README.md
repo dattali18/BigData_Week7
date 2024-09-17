@@ -8,6 +8,26 @@
 3. Make some queries to the DB (using `R` and/or `SQL`)
 4. Create a Recommendation system based on the data
 
+## Usage
+
+Please note that you need to install `sqlite3` and `mysql` in order to run the scripts.
+
+Once you have installed the required software, you can run the following commands:
+
+```bash
+# create the database in sqlite
+sqlite3 BX_db.sqlite < "scripts/BX_Creates.sql"
+```
+
+Once you have created the database, you can import the data from the `Insert` files:
+
+```bash
+# import the data from the dump files
+sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Users_Insert.sql"
+sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Books_Insert.sql"
+sqlite3 BX_db.sqlite < "BX_Sqlite_Inserts/BX_Book_Ratings_Insert.sql"
+```
+
 ## DB Schema
 
 ### BX-Users
