@@ -21,7 +21,8 @@ sqlite3 BX_db.sqlite < "BX_Sqlite_Creates/BX_Creates.sql"
 
 Now we will use the `R` script to convert tha data from the `MySQL` dump files into `Sqlite` format:
 
-> [!Note] its possible that the converted files already exist in the repo, but you can run the script to convert them again.
+> [!Note] 
+> its possible that the converted files already exist in the repo, but you can run the script to convert them again.
 
 ```bash
 # convert the data from the MySQL dump files into Sqlite format
