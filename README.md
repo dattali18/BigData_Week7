@@ -21,11 +21,11 @@ sqlite3 BX_db.sqlite < "BX_Sqlite_Creates/BX_Creates.sql"
 
 Now we will use the `R` script to convert tha data from the `MySQL` dump files into `Sqlite` format:
 
-> [!NOTE] its possible that the converted files already exist in the repo, but you can run the script to convert them again.
+> [!Note] its possible that the converted files already exist in the repo, but you can run the script to convert them again.
 
 ```bash
 # convert the data from the MySQL dump files into Sqlite format
-Rscript scripts/Wee7_convert_inserts.R
+Rscript scripts/convert_inserts.R
 ```
 
 Once you have created the database, you can import the data from the `Insert` files:
@@ -98,48 +98,58 @@ CREATE TABLE IF NOT EXISTS "BX-Book-Ratings" (
 
 ```sql
 -- a. How many users?
-select count(*) from BX_db.BX_Users;
+SELECT COUNT(*) FROM BX_Users;
+
 -- b. How many books?
-select count(*) from BX_db.BX_Books;
+SELECT COUNT(*) FROM BX_Books;
+
 -- c. How many ratings?
-select count(*) from BX_db.BX_Book_Ratings;
+SELECT COUNT(*) FROM BX_Book_Ratings;
 
 -- d. Histogram of user-ratings (how many users have rated N times?)
-create view temp as select count(*) as num_ratings
-from BX_db.BX_Users natural join BX_db.BX_Book_Ratings
-group by User_ID
-order by count(*);
+-- delete the view if exists so there is no error
+DROP VIEW IF EXISTS temp;
 
-select num_ratings, count(*) as bin_size
-from temp
-group by num_ratings
-order by num_ratings;
+CREATE VIEW temp AS
+SELECT COUNT(*) AS num_ratings
+FROM BX_Users
+NATURAL JOIN BX_Book_Ratings
+GROUP BY "User-ID"
+ORDER BY COUNT(*);
 
+SELECT num_ratings, COUNT(*) AS bin_size
+FROM temp
+GROUP BY num_ratings
+ORDER BY num_ratings;
 
 -- e. Histogram of book-ratings (how many books have been rated N times?)
-create view booksHistogram as select count(*) as num_ratings
-from BX_db.BX_Book_Ratings
-group by ISBN
-order by count(*);
+DROP VIEW IF EXISTS booksHistogram;
 
-select num_ratings, count(*) as bin_size
-from booksHistogram
-group by num_ratings
-order by num_ratings;
+CREATE VIEW booksHistogram AS
+SELECT COUNT(*) AS num_ratings
+FROM BX_Book_Ratings
+GROUP BY "ISBN"
+ORDER BY COUNT(*);
+
+SELECT num_ratings, COUNT(*) AS bin_size
+FROM booksHistogram
+GROUP BY num_ratings
+ORDER BY num_ratings;
 
 -- f. Top-10 rated books?
-select Book_Title, count(Book_Rating)
-from BX_db.BX_Books natural join BX_db.BX_Book_Ratings
-group by ISBN
-order by count(Book_Rating) desc
-limit 10;
+SELECT "Book-Title", COUNT("Book-Rating") AS rating_count
+FROM BX_Books
+NATURAL JOIN BX_Book_Ratings
+GROUP BY "ISBN"
+ORDER BY rating_count DESC
+LIMIT 10;
 
 -- g. Top-10 active users?
-select rating.User_ID as name, count(User_ID) as N
-from BX_db.BX_Book_Ratings rating
-group by rating.User_ID
-order by count(*) desc
-limit 0, 10;
+SELECT "User-ID", COUNT("User-ID") AS N
+FROM BX_Book_Ratings
+GROUP BY "User-ID"
+ORDER BY N DESC
+LIMIT 10;
 ```
 
 ## Recommendation System
