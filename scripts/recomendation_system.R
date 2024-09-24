@@ -1,4 +1,4 @@
-# Big-Data 
+# Big-Data
 # Submitters:
 # Daniel Attali: 328780879
 #
@@ -14,11 +14,19 @@ library(ggplot2) # plotting
 library(qpcR) # quantile regression
 
 # The sqlite database file is called BX_db.sqlite
-# The database contains 3 tables: BX_Books, BX_Users, BX_Book_Ratings
+# The database contains 3 tables: BX-Books, BX-Users, BX-Book-Ratings
 
 # Connect to the database
 con <- dbConnect(SQLite(), dbname="BX_db.sqlite")
 
+tablesNames <- dbListTables(con)
+
+
+ratings <- dbGetQuery(con, "SELECT * FROM 'BX-Book-Ratings' as b WHERE b.'Book-Rating' > 0 and b.'Book-Rating' <= 10 and 'ISBN' REGEXP '^[A-Za-z0-9]+$'")
+
+detach("package:RSQLite", unload = TRUE)
+
+print(head(ratings))
+
 # test connection
 print(dbListTables(con))
-
