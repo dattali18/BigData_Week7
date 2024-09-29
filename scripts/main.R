@@ -122,6 +122,14 @@ if (length(filtered_predictions) > 0) {
   
   # Add meaningful column names (e.g., Recommendation_1, Recommendation_2, etc.)
   colnames(predictions_df) <- paste0('Recommendation_', 1:ncol(predictions_df))
+
+  # at this point the dataframe is like so:
+  # Recommendation_1 Recommendation_2 Recommendation_3 Recommendation_4 Recommendation_5 Recommendation_6 Recommendation_7 Recommendation_8 Recommendation_9 Recommendation_10
+  # "0345339703","0375727345","0380727501","0553274295","0553296981","0062502182","0375703861","039592720X","044022165X","0679446486"
+  # ...
+  # and the ISBNs are in the format "0345339703" which is not very human-readable
+  # so we will join the ISBNs with the book titles to make it more readable
+  predictions_df <- merge(predictions_df, books, by.x = "Recommendation_1", by.y = "ISBN", all.x = TRUE)
   
   # Write the predictions to a CSV file
   write.csv(predictions_df, "recommendations.csv", row.names = FALSE)
